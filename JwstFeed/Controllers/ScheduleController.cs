@@ -75,8 +75,8 @@ public class ScheduleController : Controller
             .LastOrDefault(o =>
             {
                 return o.StartTime > DateTime.UtcNow
-                          &&
-                          !DateTime.UtcNow.Between(o.StartTime, o.EndTime);
+                       &&
+                       !DateTime.UtcNow.Between(o.StartTime, o.EndTime);
             });
 
         return new TargetObservation()
