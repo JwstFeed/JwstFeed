@@ -1,4 +1,4 @@
-﻿using JwstFeed.Models.Entities;
+using JwstFeed.Models.Entities;
 using JwstFeed.Models.Extensions;
 using JwstFeed.Models.Providers;
 
@@ -6,8 +6,8 @@ namespace JwstFeed.Models.Services;
 
 public class ObservationScheduleService
 {
-	#region Data Members
-	private PaginatedList<Observation> observations { get; }
+    #region Data Members
+    private PaginatedList<Observation> observations { get; }
     #endregion
 
     #region Ctor
@@ -67,7 +67,7 @@ public class ObservationScheduleService
     public PaginatedList<Observation> GetAllObservations()
     {
         return this.observations;
-    }   
+    }
     #endregion
 
     #region Private Methods
