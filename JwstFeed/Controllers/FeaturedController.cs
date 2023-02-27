@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
-namespace JwstFeed.Controllers
+namespace JwstFeed.Controllers;
+
+public class FeaturedController : Controller
 {
-    public class FeaturedController : Controller
-    {
-        public IActionResult Index()
-        {
-            return View();
-        }
-    }
+	public IActionResult Index()
+	{
+		return View();
+	}
 }
