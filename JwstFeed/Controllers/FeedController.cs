@@ -14,9 +14,9 @@ public class FeedController : Controller
 	#region Public Methods
 	public IActionResult Index()
 	{
-        UserPreferences userNewPreferences = getDefaultUserPreferences();
+		UserPreferences userNewPreferences = getDefaultUserPreferences();
 
-        return View("ShowFeed", userNewPreferences);
+		return View("ShowFeed", userNewPreferences);
 	}
 
 	public IActionResult ShowFeed(string currentFilter, int pageNumber = 1, string searchTerm = "")
@@ -29,21 +29,21 @@ public class FeedController : Controller
 		return View(userNewPreferences);
 	}
 
-    public IActionResult ShowFilteredFeed()
+	public IActionResult ShowFilteredFeed()
 	{
-        UserPreferences userNewPreferences = getDefaultUserPreferences();
+		UserPreferences userNewPreferences = getDefaultUserPreferences();
 
-        return View("ShowFeed", userNewPreferences);
-    }
+		return View("ShowFeed", userNewPreferences);
+	}
 
-    public IActionResult Search()
+	public IActionResult Search()
 	{
-        UserPreferences userNewPreferences = getDefaultUserPreferences();
+		UserPreferences userNewPreferences = getDefaultUserPreferences();
 
-        return View("ShowFeed", userNewPreferences);
-    }
+		return View("ShowFeed", userNewPreferences);
+	}
 
-    [HttpPost]
+	[HttpPost]
 	public IActionResult ShowFilteredFeed(UserPreferences userPreferences, string btnValue = "")
 	{
 		handleFilterMemory(userPreferences, btnValue);
