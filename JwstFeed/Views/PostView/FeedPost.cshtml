@@ -1,0 +1,168 @@
+﻿@using JwstFeed.Models.FeedItems;
+
+@model IFeedItem
+
+<title>James Webb Space Telescope Feed Post</title>
+<meta name="description" content="James Webb Space Telescope Feed - @Model.ShortTitle">
+
+<script language="JavaScript">
+    function showShare(btn, postUrl) {
+        const shareData = {
+            title: "JWST Feed Post",
+            text: "",
+            url: postUrl,
+        };
+
+        navigator.share(shareData);
+    }
+
+    function copyToClipboard(textData, elmnt) {
+        navigator.clipboard.writeText(textData);
+        var t = document.createElement("textarea");
+        t.value = textData;
+        t.style.position = "absolute";
+        t.style.display = "inline";
+        t.style.width = t.style.height = t.style.padding = 0;
+        t.setAttribute("readonly", "");
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand("copy");
+        document.body.removeChild(t);
+        showTmpPopup(elmnt);
+    }
+
+    function showTmpPopup(elmnt) {
+        var popup = elmnt.getElementsByClassName("popuptext")[0];
+        popup.classList.toggle("show");
+    }
+
+    function virtClick(divId) {
+        var link = document.getElementById(divId);
+        link.onclick.call(link);
+    }
+</script>
+
+<style>
+    ul.share-buttons {
+        list-style: none;
+        padding: 0;
+    }
+
+        ul.share-buttons li {
+            display: inline;
+        }
+
+        ul.share-buttons .sr-only {
+            position: absolute;
+            clip: rect(1px 1px 1px 1px);
+            clip: rect(1px, 1px, 1px, 1px);
+            padding: 0;
+            border: 0;
+            height: 1px;
+            width: 1px;
+            overflow: hidden;
+        }
+
+    button {
+        display: inline-block;
+        padding: 0;
+        margin-top: 5px;
+        vertical-align: top;
+        border: 0px;
+        background-color: transparent;
+    }
+
+    #close-image img {
+        display: block;
+    }
+
+</style>
+
+<center>
+    <h1 class="marked-title-h1"><span class="marked-title">James Webb Space Telescope Feed Post</span></h1>
+</center>
+<br />
+
+@{
+    string sourceUrl = Model.SourceUrl == "#" ? $"/StsciImage/ViewImage?fullImagePath={Model.TargetUrl}" : Model.SourceUrl;
+    string feedPostSourceUrl = $"/PostView/FeedPost?ci={Model.ClusterIndex}";
+    string currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}{Context.Request.QueryString}";
+}
+
+<div class="tabbed round">
+    <div class="feed-post">
+        <div class="icon-menu-container">
+            <img loading="lazy" src=@("/icons/" + Model.IconIndex.ToString().ToLower() + ".png") class="center-image padded-img feedpost-icon" alt="@Model.IconIndex.ToString()" title="@Model.IconIndex.ToString()" />
+            <img src="/icons/sharepost.png" class="menu-open-btns" onclick="showShare(this, '@currentUrl')" />
+            <img src="/icons/copylink.png" class="menu-open-btns copypostlink-btn popup" onclick="virtClick('popupContainerDiv')" />
+            <div id="popupContainerDiv" class="popup" onclick="copyToClipboard('@currentUrl', this)">
+                <span class="popuptext" id="myPopup">Post Link Copied!</span>
+            </div>
+        </div>
+
+        <div class="fix-margin-space">
+            <span class="small-font">Date: @Model.DatePublished.ToShortDateString()</span>
+            <a title="The date can be either the release date / the upload date to the internet / the date it got added to the feed" tabindex="0">
+                <img src="/icons/info.png" height="18" width="18" class="info-icon" />
+            </a>
+        </div>
+
+        <a target="_blank" rel="noopener noreferrer" href="@sourceUrl" class="semi-decorated-a">
+            <p class="feedpost-title">@Model.ShortTitle</p>
+        </a>
+        <br>
+
+        @if (Model.PlotType == ePlotType.Image)
+        {
+            string targetUrl = Model.IconIndex.ToString().ToUpper().Contains("STSCIRAW")
+            ? $"/StsciImage/ViewImage?fullImagePath={Model.TargetUrl}"
+            : Model.TargetUrl;
+
+            <a target="_blank" rel="noopener noreferrer" href="@targetUrl">
+                <img loading="lazy" src="@Model.ThumbnailUrl" class="feedpost-image" title="@Model.ShortTitle" />
+            </a>
+        }
+        else if (Model.PlotType == ePlotType.Link)
+        {
+            if (Model.IconIndex == eIconIndex.StsciSchedule)
+            {
+                <a target="_blank" rel="noopener noreferrer" href="@Model.TargetUrl">
+                    <img loading="lazy" src="/icons/schedulelink.png" style="display:block;" />
+                </a>
+            }
+            else if (Model.IconIndex == eIconIndex.Arxiv)
+            {
+                <a target="_blank" rel="noopener noreferrer" href="@Model.TargetUrl">
+                    <img loading="lazy" src="/icons/arxivlink.png" style="display:block;" />
+                </a>
+            }
+            else
+            {
+                <a target="_blank" rel="noopener noreferrer" href="@Model.TargetUrl">
+                    <img loading="lazy" src="/icons/genlinknew.png" style="display:block;" />
+                </a>
+            }
+        }
+        else if (Model.PlotType == ePlotType.Video)
+        {
+            <div class="videowrapper">
+                <iframe loading="lazy" style="display:block; background-color: transparent" src="@Model.TargetUrl" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen allowtransparency="true"></iframe>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="share-btns">
+    <ul class="share-buttons" data-source="simplesharingbuttons.com">
+        <li><a href="https://www.facebook.com/sharer/sharer.php?u=@currentUrl" title="Share on Facebook" target="_blank"><img alt="Share on Facebook" src="/icons/sharebuttons/Facebook.png" /></a></li>
+        <li><a href="https://twitter.com/intent/tweet?source=@currentUrl&text=James%20Webb%20Space%20Telescope%20Feed:@currentUrl" target="_blank" title="Tweet"><img alt="Tweet" src="/icons/sharebuttons/Twitter.png" /></a></li>
+        <li><a href="http://www.tumblr.com/share?v=3&u=@currentUrl&quote=James%20Webb%20Space%20Telescope%20Feed&s=" target="_blank" title="Post to Tumblr"><img alt="Post to Tumblr" src="/icons/sharebuttons/Tumblr.png" /></a></li>
+        <li><a href="http://pinterest.com/pin/create/button/?url=@currentUrl&description=" target="_blank" title="Pin it"><img alt="Pin it" src="/icons/sharebuttons/Pinterest.png" /></a></li>
+        <li><a href="https://getpocket.com/save?url=@currentUrl&title=James%20Webb%20Space%20Telescope%20Feed" target="_blank" title="Add to Pocket"><img alt="Add to Pocket" src="/icons/sharebuttons/Pocket.png" /></a></li>
+        <li><a href="http://www.reddit.com/submit?title=James%20Webb%20Space%20Telescope%20Feed&url=@currentUrl" target="_blank" title="Submit to Reddit"><img alt="Submit to Reddit" src="/icons/sharebuttons/Reddit.png" /></a></li>
+        <li><a href="http://www.linkedin.com/shareArticle?mini=true&url=@currentUrl&title=James%20Webb%20Space%20Telescope%20Feed&summary=&source=http%3A%2F%2Fjwstfeed.com" target="_blank" title="Share on LinkedIn"><img alt="Share on LinkedIn" src="/icons/sharebuttons/LinkedIn.png" /></a></li>
+        <li><a href="http://wordpress.com/press-this.php?u=@currentUrl&quote=James%20Webb%20Space%20Telescope%20Feed&s=" target="_blank" title="Publish on WordPress"><img alt="Publish on WordPress" src="/icons/sharebuttons/Wordpress.png" /></a></li>
+        <li><a href="https://pinboard.in/popup_login/?url=@currentUrl&title=James%20Webb%20Space%20Telescope%20Feed&description=" target="_blank" title="Save to Pinboard"><img alt="Save to Pinboard" src="/icons/sharebuttons/Pinboard.png" /></a></li>
+        <li><a href="mailto:?subject=James%20Webb%20Space%20Telescope%20Feed&body=:@currentUrl" target="_blank" title="Send email"><img alt="Send email" src="/icons/sharebuttons/Email.png" /></a></li>
+    </ul>
+</div>
