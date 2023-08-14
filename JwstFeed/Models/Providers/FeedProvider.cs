@@ -17,13 +17,13 @@ public class FeedProvider
     public FeedProvider()
     {
         this.dbContext = new WebbFeedDbContext();
-        this.enumKeys = getEnumKeys();
     }
     #endregion
 
     #region Public Methods
     public PaginatedList<IFeedItem> GetFeedItems(FeedPageSettings pageSettings)
     {
+        this.enumKeys = getEnumKeys();
         IQueryable<EntityFeedItemModel> filteredItems = getFilteredItems(pageSettings);
         ICollection<IFeedItem> convertedItems = getConvertedItems(filteredItems, pageSettings);
         int totalCount = filteredItems.Count();
@@ -44,12 +44,12 @@ public class FeedProvider
     #region Private Methods
     private ICollection<IFeedItem> getConvertedItems(IQueryable<EntityFeedItemModel> filteredItems, FeedPageSettings pageSettings)
     {
-        IQueryable<EntityFeedItemModel> currentPageItems = getCurrentPageItems(filteredItems, pageSettings);
+        List<EntityFeedItemModel> currentPageItems = getCurrentPageItems(filteredItems, pageSettings);
 
         return convertItems(currentPageItems);
     }
 
-    private ICollection<IFeedItem> convertItems(IQueryable<EntityFeedItemModel> items) // For Faster Performance
+    private ICollection<IFeedItem> convertItems(List<EntityFeedItemModel> items) // For Faster Performance
     {
         ICollection<IFeedItem> newItems = new List<IFeedItem>();
 
@@ -97,12 +97,13 @@ public class FeedProvider
                 string.IsNullOrEmpty(pageSettings.SearchTerm)
                 || i.ShortTitle.ToUpper().Contains(pageSettings.SearchTerm.ToUpper()));
 
-    private IQueryable<EntityFeedItemModel> getCurrentPageItems(IQueryable<EntityFeedItemModel> filteredItems, FeedPageSettings pageSettings)
+    private List<EntityFeedItemModel> getCurrentPageItems(IQueryable<EntityFeedItemModel> filteredItems, BasePageSettings pageSettings)
         =>
         filteredItems
         .OrderByDescending(i => i.ClusterIndex)
         .Skip((pageSettings.PageNumber - 1) * pageSettings.PageSize)
-        .Take(pageSettings.PageSize);
+        .Take(pageSettings.PageSize)
+        .ToList();
 
     private IQueryable<Observation> getObservationSchedule()
         =>
