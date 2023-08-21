@@ -35,9 +35,9 @@ public class FeedProvider
     {
         IQueryable<Observation> observations = getObservationSchedule();
         IReadOnlyList<Observation> currentPageObservations = getCurrentPageObservations(observations, pageSettings);
-        int observationsCount = observations.Count();
+        int observationCount = observations.Count();
 
-        return new PaginatedList<Observation>(currentPageObservations, observationsCount, pageSettings);
+        return new PaginatedList<Observation>(currentPageObservations, observationCount, pageSettings);
     }
     #endregion
 
